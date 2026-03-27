@@ -65,5 +65,5 @@ Collate:
 Suggests: 
     testthat
 SystemRequirements: pandoc (>= 1.14) - http://pandoc.org
-URL: https://singator.github.io/autoharp-docs/
+URL: https://github.com/namanlab/autoharp
 VignetteBuilder: knitr
