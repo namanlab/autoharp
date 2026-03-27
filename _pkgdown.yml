@@ -1,0 +1,202 @@
+url: https://github.com/singator/autoharp
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#1a3a5c"
+    secondary: "#0891b2"
+    success: "#27ae60"
+    info: "#0891b2"
+    warning: "#f59e0b"
+    danger: "#dc2626"
+    light: "#f7fafc"
+    dark: "#0f2744"
+    base_font:
+      google:
+        family: "Inter"
+        wght: "300..700"
+    heading_font:
+      google:
+        family: "Merriweather"
+        wght: "400..700"
+    code_font:
+      google:
+        family: "Fira Code"
+        wght: "300..500"
+    border-radius: "0.5rem"
+    btn-border-radius: "0.375rem"
+    link-color: "#0891b2"
+    link-hover-color: "#1a3a5c"
+    navbar-light-brand-color: "#fff"
+    navbar-light-color: "rgba(255,255,255,0.92)"
+    navbar-light-active-color: "#fff"
+
+home:
+  title: "autoharp: Semi-Automatic Grading of R & Rmd Scripts"
+  description: >
+    A customisable set of tools for assessing and grading R or R Markdown scripts
+    from students at scale. Supports output correctness checking, runtime profiling,
+    static AST-based code analysis, and three interactive Shiny grading apps.
+    Developed at the National University of Singapore.
+
+navbar:
+  bg: primary
+  type: dark
+  structure:
+    left: [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    intro:
+      text: "Get Started"
+      href: articles/getting-started.html
+    articles:
+      text: "Articles"
+      menu:
+      - text: "Introduction & Quick Start"
+        href: articles/getting-started.html
+      - text: "---"
+      - text: "Core Concepts"
+      - text: "Key Concepts"
+        href: articles/bg_concepts.html
+      - text: "TreeHarp: R Expressions as Trees"
+        href: articles/treeharp_class.html
+      - text: "Complete Grading Workflow"
+        href: articles/demo_workflow.html
+      - text: "---"
+      - text: "Applications"
+      - text: "Shiny App: Grading"
+        href: articles/shiny_grading.html
+      - text: "Shiny App: Similarity Checks"
+        href: articles/shiny_similarity.html
+      - text: "Shiny App: Solution Checker"
+        href: articles/shiny_soln_checker.html
+    github:
+      icon: "fab fa-github fa-lg"
+      href: https://github.com/namanlab/autoharp
+      aria-label: GitHub
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with
+
+reference:
+- title: "Package Overview"
+  desc: "Package-level documentation for autoharp."
+  contents:
+  - autoharp
+
+- title: "Core Grading Functions"
+  desc: >
+    The primary functions you need to set up and run the grading workflow.
+    Start with `populate_soln_env()` to prepare the solution environment,
+    then use `render_one()` to grade individual student scripts.
+  contents:
+  - populate_soln_env
+  - render_one
+  - log_summary
+
+- title: "TreeHarp S4 Class"
+  desc: >
+    The `TreeHarp` S4 class represents any R expression as a rooted, directed
+    tree using Breadth-First Search ordering. This enables powerful static
+    code analysis beyond simple pattern matching.
+  contents:
+  - TreeHarp-class
+  - lang_2_tree
+  - to_BFS
+  - subtree_at
+  - generate_all_subtrees
+  - carve_subtree
+  - is_subtree_rooted_at
+  - path_to_root
+  - get_recursive_index
+  - get_parent_call_id
+  - join_treeharps
+
+- title: "ForestHarp — Working with Script Files"
+  desc: >
+    Functions for converting entire R/Rmd/qmd scripts into collections of
+    TreeHarp objects and applying analyses across them.
+  contents:
+  - rmd_to_forestharp
+  - fapply
+  - forestharp-helpers
+  - pipe_can_improve_this
+  - apply_can_improve_this
+  - only_actual_args_differ
+
+- title: "Checking & Assessment Functions"
+  desc: >
+    Functions for checking the correctness of student outputs, validating
+    R Markdown structure, measuring runtime performance, and counting
+    code style lint violations.
+  contents:
+  - check_correctness
+  - check_rmd
+  - check_runtime
+  - count_lints_one
+  - count_lints_all
+
+- title: "Script Utilities"
+  desc: >
+    Utility functions for extracting content from scripts, managing
+    environments, and working with file paths.
+  contents:
+  - extract_chunks
+  - extract_non_chunks
+  - extract_section_text
+  - get_libraries
+  - generate_thumbnails
+  - env_size
+  - rmd_to_token_count
+  - render_prechecks
+
+- title: "File & Path Management"
+  desc: "Functions for managing grading output directories and file paths."
+  contents:
+  - reset_path
+  - clean_dir
+  - replace_sp_chars_filename
+  - copy_e2e
+
+- title: "TreeHarp Accessors & Methods"
+  desc: >
+    S4 generic methods and accessor functions for working with individual
+    TreeHarp objects — inspecting their structure, navigating the tree,
+    and plotting.
+  contents:
+  - get_adj_list
+  - get_node_types
+  - get_parent_id
+  - get_child_ids
+  - get_levels
+  - "plot,TreeHarp-method"
+  - as.matrix
+
+- title: "TreeHarp Internal Helpers"
+  desc: >
+    Lower-level helper functions used internally by the TreeHarp system.
+    These are exported for advanced users building custom analyses.
+  contents:
+  - adj_list_2_matrix
+  - matrix_2_adj_list
+  - prune_depth
+  - keep_branches
+  - find_branch_num
+  - rbind_to_nodes_info
+  - is_connected
+  - is_cyclic_r
+  - update_adj_list
+  - get_next_subtree
+  - get_next_depth_id
+  - tree_sim
+  - jaccard_treeharp
+  - carve_mst
+  - K2
+  - get_child_ids2
+  - get_parent_id2
+
+news:
+  one_page: true

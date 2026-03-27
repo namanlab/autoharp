@@ -1,0 +1,16 @@
+pandoc: 3.8.2.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  bg_concepts: bg_concepts.html
+  demo_workflow: demo_workflow.html
+  getting-started: getting-started.html
+  shiny_grading: shiny_grading.html
+  shiny_similarity: shiny_similarity.html
+  shiny_soln_checker: shiny_soln_checker.html
+  treeharp_class: treeharp_class.html
+last_built: 2026-03-27T06:17Z
+urls:
+  reference: https://github.com/singator/autoharp/reference
+  article: https://github.com/singator/autoharp/articles
+

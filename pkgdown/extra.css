@@ -1,0 +1,847 @@
+/* ============================================================
+   autoharp pkgdown custom styles
+   ============================================================ */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700&family=Fira+Code:wght@300;400;500&display=swap');
+
+/* ── Root colour tokens ────────────────────────────────────── */
+:root {
+  --ah-navy:      #1a3a5c;
+  --ah-navy-lt:   #2c5282;
+  --ah-gold:      #b8860b;
+  --ah-gold-lt:   #e8c56a;
+  --ah-gold-bg:   #fdf6e3;
+  --ah-green:     #27ae60;
+  --ah-blue:      #2980b9;
+  --ah-teal:      #0891b2;
+  --ah-text:      #1a202c;
+  --ah-muted:     #4a5568;
+  --ah-border:    #cbd5e0;
+  --ah-bg:        #f7fafc;
+  --ah-white:     #ffffff;
+  --ah-code-bg:   #edf2f7;
+  --ah-shadow:    0 4px 20px rgba(26, 58, 92, 0.10);
+  --ah-shadow-lg: 0 8px 30px rgba(26, 58, 92, 0.15);
+  --ah-radius:    0.75rem;
+}
+
+/* ── Base typography ───────────────────────────────────────── */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--ah-text);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  background: #ffffff;
+  /* Offset for the fixed navbar so content isn't hidden beneath it */
+  padding-top: 3.75rem;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Merriweather', Georgia, serif;
+  font-weight: 700;
+  color: var(--ah-navy);
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--ah-teal);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ah-navy);
+  text-decoration: underline;
+}
+
+code, pre, kbd, samp {
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.875em;
+}
+
+/* ── Top-level layout containers ──────────────────────────── */
+/* All pkgdown page templates share .container at the root */
+.container {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+/* Ensure the two-column row aligns its columns at the top */
+.container > .row {
+  align-items: flex-start;
+}
+
+/* ── Navbar ────────────────────────────────────────────────── */
+.navbar {
+  background: linear-gradient(135deg, #0f2744 0%, var(--ah-navy) 50%, #1e4a7a 100%) !important;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+  padding: 0.65rem 1rem;
+}
+
+.navbar-brand {
+  font-family: 'Merriweather', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #fff !important;
+  letter-spacing: -0.01em;
+}
+
+/* Logo size control */
+.navbar-brand img {
+  height: 36px !important;
+  width: auto !important;
+  max-height: 36px !important;
+}
+
+.navbar-brand::before {
+  content: '🎓 ';
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.35rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff !important;
+}
+
+.navbar .dropdown-menu {
+  border: 1px solid var(--ah-border);
+  box-shadow: var(--ah-shadow-lg);
+  border-radius: var(--ah-radius);
+  padding: 0.5rem;
+  background: #fff;
+}
+
+.navbar .dropdown-item {
+  border-radius: 0.35rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ah-text);
+  transition: background 0.15s;
+}
+
+.navbar .dropdown-item:hover {
+  background: var(--ah-bg);
+  color: var(--ah-navy);
+}
+
+.navbar .dropdown-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ah-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.5rem 1rem 0.25rem;
+}
+
+/* ── Home page hero ────────────────────────────────────────── */
+.template-home .contents {
+  max-width: 100%;
+}
+
+/* Control logo size in home page header */
+.template-home .page-header img[align="right"],
+.template-home h1 img {
+  height: 80px !important;
+  max-height: 80px !important;
+  width: auto !important;
+}
+
+.template-home .contents img:not([align="right"]) {
+  border-radius: var(--ah-radius);
+  box-shadow: var(--ah-shadow);
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+}
+
+/* Home page table styling */
+.template-home .contents table {
+  border-radius: var(--ah-radius);
+  overflow: hidden;
+  box-shadow: var(--ah-shadow);
+}
+
+/* Hero introduction paragraph */
+.template-home .contents > p:first-of-type {
+  font-size: 1.15rem;
+  color: var(--ah-muted);
+  line-height: 1.8;
+}
+
+/* Section dividers in home page */
+.template-home .contents hr {
+  border: none;
+  border-top: 2px solid var(--ah-border);
+  margin: 2.5rem 0;
+}
+
+/* Centered image captions */
+.template-home .contents p > em {
+  display: block;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ah-muted);
+  margin-top: 0.5rem;
+}
+
+.jumbotron, .template-home .contents > .row:first-child {
+  background: linear-gradient(135deg, var(--ah-navy) 0%, #2c5282 60%, #1a6b8a 100%);
+  color: #fff;
+  padding: 4rem 2rem 3.5rem;
+  border-radius: 0 0 var(--ah-radius) var(--ah-radius);
+  margin-bottom: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.jumbotron::after {
+  content: '🎸';
+  position: absolute;
+  right: 2rem;
+  bottom: 1rem;
+  font-size: 6rem;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+/* ── Sidebar (reference pages) ─────────────────────────────── */
+.template-reference-index aside,
+.template-article aside {
+  background: var(--ah-bg);
+  border-radius: var(--ah-radius);
+  border: 1px solid var(--ah-border);
+  padding: 1.25rem 1rem;
+  /* Ensure the sidebar sticks to the top on sticky-capable layouts */
+  position: sticky;
+  top: 4.5rem;
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
+}
+
+/* ── TOC (Table of Contents) sidebar ───────────────────────── */
+/* Bootstrap-toc generates a nav inside the aside for articles */
+#toc {
+  border-left: 3px solid var(--ah-border);
+  padding-left: 0.75rem;
+}
+
+#toc .nav-link {
+  color: var(--ah-muted) !important;
+  font-size: 0.83rem;
+  font-weight: 400;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.3rem;
+  line-height: 1.4;
+  display: block;
+  transition: color 0.15s, background 0.15s;
+}
+
+#toc .nav-link:hover {
+  color: var(--ah-navy) !important;
+  background: rgba(26, 58, 92, 0.06);
+  text-decoration: none;
+}
+
+#toc .nav-link.active {
+  color: var(--ah-navy) !important;
+  font-weight: 600;
+  background: rgba(26, 58, 92, 0.08);
+  border-left: 3px solid var(--ah-teal);
+  margin-left: -0.78rem;
+  padding-left: 0.78rem;
+}
+
+/* Nested TOC items (h3 etc.) */
+#toc .nav .nav .nav-link {
+  font-size: 0.8rem;
+  padding-left: 1.25rem;
+}
+
+/* TOC header label */
+.template-article aside > .toc-ignore,
+.template-article aside > h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ah-muted);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ah-border);
+}
+
+/* ── Article / vignette content ─────────────────────────────── */
+.template-article .contents {
+  max-width: 880px;
+}
+
+/* reference topic pages should not be constrained — let Bootstrap grid handle width */
+.template-reference-topic .contents {
+  max-width: 100%;
+}
+
+.template-article h1 {
+  font-size: 2rem;
+  border-bottom: 3px solid var(--ah-gold);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.75rem;
+}
+
+.template-article h2 {
+  font-size: 1.4rem;
+  margin-top: 2.25rem;
+  margin-bottom: 1rem;
+  color: var(--ah-navy);
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--ah-border);
+}
+
+.template-article h2::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 1em;
+  background: var(--ah-gold);
+  border-radius: 2px;
+  margin-right: 0.55rem;
+  vertical-align: middle;
+}
+
+.template-article h3 {
+  font-size: 1.15rem;
+  color: var(--ah-navy-lt);
+  margin-top: 1.5rem;
+}
+
+.template-article h4 {
+  font-size: 1rem;
+  color: var(--ah-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+/* Article lead paragraph */
+.template-article .contents > p:first-of-type {
+  font-size: 1.05rem;
+  color: var(--ah-muted);
+  line-height: 1.85;
+}
+
+/* Article images */
+.template-article img {
+  border-radius: var(--ah-radius);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+}
+
+/* Centered image captions (em after img) */
+.template-article p > em:only-child {
+  display: block;
+  text-align: center;
+  font-size: 0.83rem;
+  color: var(--ah-muted);
+  margin-top: -0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Code blocks ─────────────────────────────────────────────── */
+pre.sourceCode, div.sourceCode, .highlight {
+  background: #1a2332 !important;
+  border-radius: var(--ah-radius) !important;
+  padding: 1.25rem 1.5rem !important;
+  margin: 1.25rem 0 !important;
+  box-shadow: var(--ah-shadow);
+  overflow-x: auto;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+pre.sourceCode code,
+div.sourceCode pre code {
+  color: #e2e8f0;
+  font-size: 0.83rem;
+  line-height: 1.7;
+}
+
+/* Syntax highlighting */
+.sourceCode .kw { color: #81a1c1; font-weight: 600; }  /* keywords */
+.sourceCode .dt { color: #8fbcbb; }                     /* data types */
+.sourceCode .dv { color: #b48ead; }                     /* numbers */
+.sourceCode .st { color: #a3be8c; }                     /* strings */
+.sourceCode .co { color: #616e88; font-style: italic; } /* comments */
+.sourceCode .fu { color: #88c0d0; }                     /* functions */
+.sourceCode .op { color: #81a1c1; }                     /* operators */
+.sourceCode .va { color: #d8dee9; }                     /* variables */
+.sourceCode .ot { color: #d8dee9; }                     /* other tokens */
+.sourceCode .at { color: #8fbcbb; }                     /* attributes */
+.sourceCode .sc { color: #eceff4; }                     /* special chars */
+.sourceCode .an { color: #88c0d0; font-style: italic; } /* annotations */
+.sourceCode .cn { color: #b48ead; }                     /* constants */
+.sourceCode .er { color: #bf616a; font-weight: bold; }  /* errors */
+
+/* Inline code */
+p code, li code, td code, dt code {
+  background: #e8f0fe;
+  color: #1a3a5c;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.85em;
+  border: 1px solid #c3d2f0;
+  font-weight: 500;
+}
+
+/* ── Output blocks ───────────────────────────────────────────── */
+pre.r-output, .r-output {
+  background: #f8fafc;
+  border-left: 3px solid var(--ah-teal);
+  border-radius: 0 var(--ah-radius) var(--ah-radius) 0;
+  padding: 0.75rem 1rem;
+  color: var(--ah-text);
+  font-size: 0.82rem;
+  margin: 0.5rem 0 1.25rem;
+}
+
+/* ── Tables ──────────────────────────────────────────────────── */
+.table {
+  border-radius: var(--ah-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(26, 58, 92, 0.08);
+  margin: 1.5rem 0;
+  width: 100%;
+}
+
+.table thead th {
+  background: var(--ah-navy);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: none;
+  padding: 0.85rem 1rem;
+}
+
+.table tbody tr:nth-child(odd) td {
+  background: rgba(26, 58, 92, 0.025);
+}
+
+.table tbody tr:hover td {
+  background: rgba(8, 145, 178, 0.06);
+}
+
+.table td {
+  border-color: var(--ah-border);
+  padding: 0.7rem 1rem;
+  font-size: 0.88rem;
+  color: var(--ah-text);
+}
+
+.table td a {
+  color: var(--ah-teal);
+  font-weight: 500;
+}
+
+/* ── Cards (home page links) ─────────────────────────────────── */
+.card {
+  border: 1px solid var(--ah-border);
+  border-radius: var(--ah-radius);
+  box-shadow: var(--ah-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: #fff;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ah-shadow-lg);
+}
+
+.card-title {
+  font-family: 'Merriweather', Georgia, serif;
+  font-weight: 700;
+  color: var(--ah-navy);
+  font-size: 1rem;
+}
+
+/* ── Callouts / alerts ───────────────────────────────────────── */
+.callout {
+  border-radius: var(--ah-radius);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.callout-note {
+  background: #eff6ff;
+  border-left: 4px solid var(--ah-blue);
+}
+
+.callout-tip {
+  background: #f0fdf4;
+  border-left: 4px solid var(--ah-green);
+}
+
+.callout-warning {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+}
+
+blockquote {
+  border-left: 4px solid var(--ah-teal);
+  padding: 0.85rem 1.25rem;
+  background: rgba(8, 145, 178, 0.06);
+  border-radius: 0 var(--ah-radius) var(--ah-radius) 0;
+  color: var(--ah-text);
+  margin: 1.5rem 0;
+}
+
+blockquote p {
+  margin: 0;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ah-navy);
+}
+
+/* ── Reference index page ─────────────────────────────────────── */
+/* pkgdown 2.x uses a <table class="ref-index table"> with two columns */
+.template-reference-index .section-title,
+.template-reference-index h2 {
+  font-family: 'Merriweather', Georgia, serif;
+  color: var(--ah-navy);
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--ah-teal);
+  padding-bottom: 0.3rem;
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.template-reference-index h2::before {
+  display: none;
+}
+
+/* The section description paragraph below h2 */
+.template-reference-index h2 + p {
+  font-size: 0.9rem;
+  color: var(--ah-muted);
+  margin-bottom: 1rem;
+  background: var(--ah-bg);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.4rem;
+  border-left: 3px solid var(--ah-border);
+}
+
+/* Reference index table */
+table.ref-index {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table.ref-index col.alias { width: 35%; }
+table.ref-index col.title { width: 65%; }
+
+table.ref-index td {
+  vertical-align: top;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--ah-border);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+table.ref-index td:first-child {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.ref-index td p { margin: 0; }
+
+table.ref-index tr:last-child td { border-bottom: none; }
+
+.template-reference-index .ref-description {
+  font-size: 0.88rem;
+  color: var(--ah-muted);
+}
+
+/* ── Function reference page ─────────────────────────────────── */
+.template-reference-topic .usage {
+  background: #1a2332;
+  border-radius: var(--ah-radius);
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+}
+
+.template-reference-topic .usage code {
+  color: #e2e8f0;
+}
+
+.template-reference-topic h2 {
+  font-size: 1.15rem;
+  color: var(--ah-navy);
+  border-bottom: 1px solid var(--ah-border);
+  padding-bottom: 0.3rem;
+  margin-top: 1.75rem;
+}
+
+.template-reference-topic h2::before {
+  display: none;
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.3em 0.65em;
+  border-radius: 0.4rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--ah-navy), var(--ah-navy-lt));
+  border: none;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(26, 58, 92, 0.3);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--ah-navy-lt), var(--ah-teal));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(26, 58, 92, 0.4);
+  color: #fff;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+footer {
+  background: #0f2744;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  margin-top: 4rem;
+  font-size: 0.85rem;
+  border-top: 3px solid var(--ah-teal);
+}
+
+footer a {
+  color: var(--ah-gold-lt);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* ── Images ──────────────────────────────────────────────────── */
+img.screenshot {
+  border-radius: var(--ah-radius);
+  box-shadow: var(--ah-shadow);
+  border: 1px solid var(--ah-border);
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Responsive tweaks ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar-brand { font-size: 1rem; }
+  .template-article h1 { font-size: 1.5rem; }
+  pre.sourceCode { padding: 1rem !important; }
+  .template-home .contents img { margin: 1rem auto; }
+}
+
+/* ── Pkgdown version / news badges ───────────────────────────── */
+.version.label {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff !important;
+  font-weight: 700;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 0.15em 0.55em;
+  font-size: 0.78rem;
+}
+
+/* Ensure version text in navbar is always visible */
+.navbar .version,
+.navbar span.version,
+.navbar .nav-text.text-muted,
+.navbar small.nav-text {
+  color: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.35rem;
+  padding: 0.1em 0.45em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+/* ── Home page feature boxes ─────────────────────────────────── */
+.feature-box {
+  background: #fff;
+  border: 1px solid var(--ah-border);
+  border-radius: var(--ah-radius);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--ah-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+}
+
+.feature-box:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ah-shadow-lg);
+}
+
+.feature-box .icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.feature-box h4 {
+  color: var(--ah-navy);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature-box p {
+  font-size: 0.88rem;
+  color: var(--ah-muted);
+  margin: 0;
+}
+
+/* ── Scroll to top / anchor links ─────────────────────────────── */
+a.anchor {
+  color: var(--ah-teal);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+h2:hover a.anchor, h3:hover a.anchor {
+  opacity: 1;
+}
+
+/* ── Copy button on code blocks ──────────────────────────────── */
+.copy-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 0.35rem;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* ── Search box ──────────────────────────────────────────────── */
+form[role="search"] {
+  display: flex;
+  align-items: center;
+}
+
+form[role="search"] .form-control,
+.form-inline .form-control {
+  border-radius: 2rem;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  padding: 0.4rem 1rem;
+  font-size: 0.88rem;
+  min-width: 160px;
+  transition: all 0.2s;
+}
+
+form[role="search"] .form-control::placeholder,
+.form-inline .form-control::placeholder {
+  color: rgba(255,255,255,0.55);
+}
+
+form[role="search"] .form-control:focus,
+.form-inline .form-control:focus {
+  background: rgba(255,255,255,0.2);
+  border-color: var(--ah-gold-lt);
+  box-shadow: 0 0 0 3px rgba(232, 197, 106, 0.3);
+  color: #fff;
+  outline: none;
+}
+
+/* ── Home page sidebar ───────────────────────────────────────── */
+.template-home aside {
+  background: var(--ah-bg);
+  border-radius: var(--ah-radius);
+  border: 1px solid var(--ah-border);
+  padding: 1.25rem;
+}
+
+.template-home aside h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ah-muted);
+  border-bottom: 1px solid var(--ah-border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.template-home aside a {
+  color: var(--ah-teal);
+  font-size: 0.9rem;
+}
+
+.template-home aside a:hover {
+  color: var(--ah-navy);
+}
+
+/* ── News page ───────────────────────────────────────────────── */
+.template-news h1 {
+  font-size: 1.75rem;
+  color: var(--ah-navy);
+  border-bottom: 3px solid var(--ah-gold);
+  padding-bottom: 0.5rem;
+}
+
+.template-news h2 {
+  background: var(--ah-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid var(--ah-teal);
+  font-size: 1.2rem;
+}
+
+.template-news h2::before {
+  display: none;
+}
+
+/* ── Print overrides ─────────────────────────────────────────── */
+@media print {
+  .navbar, footer, aside { display: none !important; }
+  body { padding-top: 0; }
+  pre.sourceCode { box-shadow: none; border: 1px solid #ccc; }
+}

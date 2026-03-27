@@ -1,0 +1,116 @@
+---
+title: "Tutorial 5, 2010"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(lubridate)
+source('utils.R')
+retail_clean <- readRDS('www/retail_clean.rds')
+```
+
+## Retail Transations, UK
+
+The file `retail_clean.rds` contains transactions from an online gift store 
+based in the United Kingdom. Here are more details about the columns in the 
+dataset:
+
+1. `InvoiceNo`: The invoice number for the transaction. Several items can be 
+purchased under one invoice number.
+2. `StockCode`: A warehouse code for the item purchased.
+3. `Description`: A detailed description of the item purchased.
+4. `Quantity`: Amount purchased by the customer.
+5. `InvoiceDate`: Date of invoice.
+6. `UnitPrice`: The unit price of the item purchased.
+7. `CustomerID`: A unique identifier for the customer.
+8. `Country`: The country that the customer is from.
+
+We shall refer to each row in the dataset as a *line item*. The dataset has been
+read into R, and is stored as the object: `retail_clean`. Use `dplyr` syntax to
+carry out the following queries, using dplyr syntax.
+
+The following libraries have been loaded into your R session:
+
+* `lubridate`
+* `tidyverse`
+
+### Exercise 1
+
+Extract all rows from the customer who *spent the most* over the time period.
+Store the rows in a data frame (or tibble) called `q1_df`.
+
+```{r q1, exercise=TRUE, exercise.lines = 5}
+q1_df <- 
+
+```
+
+### Exercise 2 
+
+Add two new columns to `retail_clean`: *year* and *month*, both numeric,
+corresponding to the year and month from the Invoice Date. Count the number of
+unique invoices in each year-month combination and arrange them in descending
+order in a dataframe `q2_df`. 
+
+The first few rows of data frame `q2_df` should look like this:
+```
+> head(q2_df)
+# A tibble: 6 × 3
+   year month     n
+  <dbl> <dbl> <int>
+1  2011    11  2631
+2  2011    10  1883
+3  2011     9  1728
+4  2011     5  1529
+5  2010    12  1385
+6  2011     6  1376
+```
+
+```{r q2, exercise=TRUE, exercise.lines = 5}
+q2_df <- 
+```
+
+### Download your solution
+
+Remember to run all your code before you download your script, and do check the
+script to ensure that all your code is present before you submit.
+
+```{r context='render', echo=FALSE, eval=TRUE}
+downloadLink("download", "Download my solution script")
+```
+
+```{r context='server', echo=FALSE, eval=TRUE}
+all_labels <- c("q1", "q2") 
+# 1 - chunk
+# 2 - text
+ex_text <- c(1, 1)
+
+output$download <- downloadHandler(
+    filename = "my_soln.Rmd",
+    content = function(file) { 
+      init_rmd(file, "My solution")
+      
+      # libraries read in
+      add_libraries(file, c("tidyverse", "lubridate"))
+      
+      # data read in:
+      data_chunk <- 'retail_clean <- readRDS("www/retail_clean.rds")'
+      add_chunk_rmd(file, "read_data", data_chunk)
+      
+      for(ii in seq_along(all_labels)){
+        if(ex_text[ii] == 1){ # chunk
+          tut_state <- get_tutorial_state(all_labels[ii])
+          add_chunk_rmd(file, all_labels[ii], tut_state$answer, 
+                        add_tryCatch = TRUE)
+        } else {
+          add_text_rmd(file, all_labels[ii], input[[all_labels[ii]]])
+        }
+        
+      }
+    }
+)
+
+```
+
