@@ -347,13 +347,8 @@ This format is compatible with autoharp's `render_one()` function for automated 
 ```
 app/
 ├── app.R              # Main Shiny application
-├── helpers.R          # Test functions and utilities
-├── README.md          # This file
-├── solution_template_simple.Rmd  # Example solution template
-├── solution_template_autoharp_modified.Rmd  # Example autoharp template
-└── sol/               # Example student files
-    ├── student_01.rmd
-    └── student_02.rmd
+├── www/helpers.R      # Test functions and utilities
+└── README.md          # This file
 ```
 
 **Generated directories during grading (configurable):**
