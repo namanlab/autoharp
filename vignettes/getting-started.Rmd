@@ -285,13 +285,12 @@ See the [Shiny Apps Guide](shiny_grading.html) for full details.
 
 ## Next Steps
 
-- **[TreeHarp Tutorial](treeharp_class.html)**: learn AST-based static
+- **[TreeHarp Tutorial](https://namanlab.github.io/autoharp/articles/treeharp_class.html)**: learn AST-based static
   analysis: detect `for` loops, check function signatures, and more
-- **[Complete Workflow](demo_workflow.html)**: a detailed end-to-end walkthrough
+- **[Complete Workflow](https://namanlab.github.io/autoharp/articles/demo_workflow.html)**: a detailed end-to-end walkthrough
   with a real data analysis assignment
-- **[Shiny Apps](shiny_grading.html)**: use the Grading App, Similarity App,
-  and Student Solution Checker
-- **[Function Reference](../reference/index.html)**: full API documentation
+- **[Shiny Apps](https://namanlab.github.io/autoharp/articles/shiny_grading.html)**: use the Grading App, Similarity App, and Student Solution Checker
+- **[Function Reference](https://namanlab.github.io/autoharp/reference/index.html)**: full API documentation
 
 ---
 

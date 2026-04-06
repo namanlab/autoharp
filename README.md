@@ -195,9 +195,8 @@ Singapore** across multiple cohorts. Key highlights from production use:
 ## Learning More
 
 - 📖 [Get Started](https://namanlab.github.io/autoharp/articles/getting-started.html): step-by-step introduction
-- 🌳 [TreeHarp Tutorial](https://namanlab.github.io/autoharp/articles/treeharp-tutorial.html): deep dive into AST-based analysis
-- 🔄 [Grading Workflow](https://namanlab.github.io/autoharp/articles/workflow.html): complete end-to-end example
-- 🖥️ [Shiny Apps](https://namanlab.github.io/autoharp/articles/shiny-apps.html): interactive tools guide
+- 🌳 [TreeHarp Tutorial](https://namanlab.github.io/autoharp/articles/treeharp_class.html): deep dive into AST-based analysis
+- 🔄 [Grading Workflow](https://namanlab.github.io/autoharp/articles/demo_workflow.html): complete end-to-end example
 - 📚 [Function Reference](https://namanlab.github.io/autoharp/reference/index.html): full API documentation
 
 ---
