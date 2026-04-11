@@ -1,6 +1,6 @@
 Package: autoharp
 Title: Semi-Automatic Grading of R and Rmd Scripts
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
     person("Vik", "Gopal", , "vik.gopal@nus.edu.sg", role = "aut"),
     person("Agrawal", "Naman", , "naman.a@nus.edu.sg", role = c("aut", "cre")),

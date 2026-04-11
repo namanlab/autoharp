@@ -39,7 +39,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">autoharp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -325,8 +325,8 @@ the inverse transform method. Then create a vector <code>X</code> of
 <code class="sourceCode R"><span><span class="va">soln</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/populate_soln_env.html">populate_soln_env</a></span><span class="op">(</span><span class="st">"solution_template.Rmd"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># soln is a list with two elements:</span></span>
-<span><span class="co"># $soln_env: the knitted solution environment (contains .rf, .X, .test_results)</span></span>
-<span><span class="co"># $test_file: path to the generated test script</span></span>
+<span><span class="co"># $env: the knitted solution environment (contains .rf, .X, .test_results)</span></span>
+<span><span class="co"># $test_fname: path to the generated test script</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">soln</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -335,10 +335,10 @@ the inverse transform method. Then create a vector <code>X</code> of
 <p>Suppose a student submits <code>student01.Rmd</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/render_one.html">render_one</a></span><span class="op">(</span></span>
-<span>  rmd_name  <span class="op">=</span> <span class="st">"student01.Rmd"</span>,</span>
-<span>  soln_env  <span class="op">=</span> <span class="va">soln</span><span class="op">$</span><span class="va">soln_env</span>,</span>
-<span>  test_file <span class="op">=</span> <span class="va">soln</span><span class="op">$</span><span class="va">test_file</span>,</span>
-<span>  out_dir   <span class="op">=</span> <span class="st">"output/"</span></span>
+<span>  rmd_name      <span class="op">=</span> <span class="st">"student01.Rmd"</span>,</span>
+<span>  out_dir       <span class="op">=</span> <span class="st">"output/"</span>,</span>
+<span>  knit_root_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  soln_stuff    <span class="op">=</span> <span class="va">soln</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The result is a one-row data frame</span></span>
@@ -355,38 +355,32 @@ the inverse transform method. Then create a vector <code>X</code> of
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>file</code></td>
+<td><code>fname</code></td>
 <td>Student’s filename</td>
 </tr>
 <tr class="even">
-<td><code>status</code></td>
-<td>
-<code>"success"</code>, <code>"timeout"</code>,
-<code>"error"</code>, or <code>"precheck_fail"</code>
-</td>
+<td><code>time_stamp</code></td>
+<td>Timestamp of the grading run</td>
 </tr>
 <tr class="odd">
-<td><code>runtime</code></td>
+<td><code>run_status</code></td>
+<td>
+<code>"SUCCESS"</code>, <code>"FAIL"</code>, or
+<code>"UNKNOWN"</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>run_time</code></td>
 <td>Total execution time (seconds)</td>
 </tr>
-<tr class="even">
-<td><code>mem_usage</code></td>
-<td>Peak memory usage (MB)</td>
-</tr>
 <tr class="odd">
-<td>
-<code>test_1</code> … <code>test_n</code>
+<td><code>run_mem</code></td>
+<td>Memory usage of the environment</td>
+</tr>
+<tr class="even">
+<td>Additional columns</td>
+<td>Correctness test results from <code>check_correctness</code>
 </td>
-<td>Result of each correctness test
-(<code>TRUE</code>/<code>FALSE</code>/<code>NA</code>)</td>
-</tr>
-<tr class="even">
-<td><code>n_lints</code></td>
-<td>Number of <code>lintr</code> style violations</td>
-</tr>
-<tr class="odd">
-<td><code>render_success</code></td>
-<td>Did the Rmd render without errors?</td>
 </tr>
 </tbody>
 </table>
@@ -399,14 +393,14 @@ the inverse transform method. Then create a vector <code>X</code> of
 <span><span class="va">student_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"submissions/"</span>, pattern <span class="op">=</span> <span class="st">"\\.Rmd$"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">results_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">student_files</span>, <span class="kw">function</span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/render_one.html">render_one</a></span><span class="op">(</span><span class="va">f</span>, soln_env <span class="op">=</span> <span class="va">soln</span><span class="op">$</span><span class="va">soln_env</span>, test_file <span class="op">=</span> <span class="va">soln</span><span class="op">$</span><span class="va">test_file</span>,</span>
-<span>             out_dir <span class="op">=</span> <span class="st">"output/"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/render_one.html">render_one</a></span><span class="op">(</span>rmd_name <span class="op">=</span> <span class="va">f</span>, out_dir <span class="op">=</span> <span class="st">"output/"</span>, knit_root_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>             soln_stuff <span class="op">=</span> <span class="va">soln</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">all_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">results_list</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Print a summary table (pass rates, runtime distribution, etc.)</span></span>
-<span><span class="fu"><a href="../reference/log_summary.html">log_summary</a></span><span class="op">(</span><span class="va">all_results</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Print a summary from the log file</span></span>
+<span><span class="fu"><a href="../reference/log_summary.html">log_summary</a></span><span class="op">(</span><span class="st">"output/render_one.log"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -421,25 +415,21 @@ to count style violations:</p>
 <span></span>
 <span><span class="co"># Count across all submissions</span></span>
 <span><span class="va">all_lints</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/count_lints_all.html">count_lints_all</a></span><span class="op">(</span></span>
-<span>  files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"submissions/"</span>, pattern <span class="op">=</span> <span class="st">"\\.R$"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  file_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"submissions/"</span>, pattern <span class="op">=</span> <span class="st">"\\.R$"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">all_lints</span><span class="op">)</span></span></code></pre></div>
-<p>Lint violations are included in the <code><a href="../reference/render_one.html">render_one()</a></code> output
-automatically, so you don’t need to call these separately if you’re
-already running the full pipeline.</p>
+<p>You can run lint checks separately from the main grading pipeline
+using these functions.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="checking-rmd-structure">Checking Rmd Structure<a class="anchor" aria-label="anchor" href="#checking-rmd-structure"></a>
 </h2>
-<p>For R Markdown submissions, verify that required sections and chunks
-are present:</p>
+<p>For R Markdown submissions, verify that the file is a valid Rmd:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Check that the submitted Rmd has the required sections</span></span>
-<span><span class="va">rmd_check</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/check_rmd.html">check_rmd</a></span><span class="op">(</span></span>
-<span>  rmd_name          <span class="op">=</span> <span class="st">"student01.Rmd"</span>,</span>
-<span>  expected_sections <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Introduction"</span>, <span class="st">"Analysis"</span>, <span class="st">"Conclusion"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Check that the submitted file is a valid Rmd</span></span>
+<span><span class="co"># Returns TRUE if file has .Rmd extension, YAML header, and R chunks</span></span>
+<span><span class="va">rmd_check</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/check_rmd.html">check_rmd</a></span><span class="op">(</span>fname <span class="op">=</span> <span class="st">"student01.Rmd"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rmd_check</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
@@ -468,8 +458,8 @@ submissions with progress tracking</li>
 <strong>Plots</strong>: review student plots side-by-side with the
 solution</li>
 </ol>
-<p>See the <a href="shiny_grading.html">Shiny Apps Guide</a> for full
-details.</p>
+<p>See the <a href="https://namanlab.github.io/autoharp/articles/shiny_grading.html" class="external-link">Shiny
+Apps Guide</a> for full details.</p>
 <hr>
 </div>
 <div class="section level2">

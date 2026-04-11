@@ -174,8 +174,8 @@ abs(sd(X) - 0.1633) < 0.02       # SD close to 0.163 (theoretical)
 soln <- populate_soln_env("solution_template.Rmd")
 
 # soln is a list with two elements:
-# $soln_env: the knitted solution environment (contains .rf, .X, .test_results)
-# $test_file: path to the generated test script
+# $env: the knitted solution environment (contains .rf, .X, .test_results)
+# $test_fname: path to the generated test script
 str(soln)
 ```
 
@@ -185,10 +185,10 @@ Suppose a student submits `student01.Rmd`:
 
 ```{r render}
 result <- render_one(
-  rmd_name  = "student01.Rmd",
-  soln_env  = soln$soln_env,
-  test_file = soln$test_file,
-  out_dir   = "output/"
+  rmd_name      = "student01.Rmd",
+  out_dir       = "output/",
+  knit_root_dir = getwd(),
+  soln_stuff    = soln
 )
 
 # The result is a one-row data frame
@@ -199,13 +199,12 @@ The output data frame contains:
 
 | Column | Description |
 |--------|-------------|
-| `file` | Student's filename |
-| `status` | `"success"`, `"timeout"`, `"error"`, or `"precheck_fail"` |
-| `runtime` | Total execution time (seconds) |
-| `mem_usage` | Peak memory usage (MB) |
-| `test_1` ... `test_n` | Result of each correctness test (`TRUE`/`FALSE`/`NA`) |
-| `n_lints` | Number of `lintr` style violations |
-| `render_success` | Did the Rmd render without errors? |
+| `fname` | Student's filename |
+| `time_stamp` | Timestamp of the grading run |
+| `run_status` | `"SUCCESS"`, `"FAIL"`, or `"UNKNOWN"` |
+| `run_time` | Total execution time (seconds) |
+| `run_mem` | Memory usage of the environment |
+| Additional columns | Correctness test results from `check_correctness` |
 
 ### Step 4: Summarise Results Across All Students
 
@@ -214,14 +213,14 @@ The output data frame contains:
 student_files <- list.files("submissions/", pattern = "\\.Rmd$", full.names = TRUE)
 
 results_list <- lapply(student_files, function(f) {
-  render_one(f, soln_env = soln$soln_env, test_file = soln$test_file,
-             out_dir = "output/")
+  render_one(rmd_name = f, out_dir = "output/", knit_root_dir = getwd(),
+             soln_stuff = soln)
 })
 
 all_results <- do.call(rbind, results_list)
 
-# Print a summary table (pass rates, runtime distribution, etc.)
-log_summary(all_results)
+# Print a summary from the log file
+log_summary("output/render_one.log")
 ```
 
 ---
@@ -236,26 +235,23 @@ lint_count <- count_lints_one("student01.R")
 
 # Count across all submissions
 all_lints <- count_lints_all(
-  files = list.files("submissions/", pattern = "\\.R$", full.names = TRUE)
+  file_names = list.files("submissions/", pattern = "\\.R$", full.names = TRUE)
 )
 print(all_lints)
 ```
 
-Lint violations are included in the `render_one()` output automatically, so
-you don't need to call these separately if you're already running the full pipeline.
+You can run lint checks separately from the main grading pipeline using these functions.
 
 ---
 
 ## Checking Rmd Structure
 
-For R Markdown submissions, verify that required sections and chunks are present:
+For R Markdown submissions, verify that the file is a valid Rmd:
 
 ```{r check-rmd}
-# Check that the submitted Rmd has the required sections
-rmd_check <- check_rmd(
-  rmd_name          = "student01.Rmd",
-  expected_sections = c("Introduction", "Analysis", "Conclusion")
-)
+# Check that the submitted file is a valid Rmd
+# Returns TRUE if file has .Rmd extension, YAML header, and R chunks
+rmd_check <- check_rmd(fname = "student01.Rmd")
 print(rmd_check)
 ```
 
@@ -279,7 +275,7 @@ The Grading App has five tabs:
 4. **Autoharp**: run `render_one()` for all submissions with progress tracking
 5. **Plots**: review student plots side-by-side with the solution
 
-See the [Shiny Apps Guide](shiny_grading.html) for full details.
+See the [Shiny Apps Guide](https://namanlab.github.io/autoharp/articles/shiny_grading.html) for full details.
 
 ---
 
