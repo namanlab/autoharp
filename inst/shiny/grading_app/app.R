@@ -1084,8 +1084,21 @@ server <- function(input, output, session) {
               if (file.exists(temp_output)) unlink(temp_output)
             })
           } else {
-            # wrap each expression in try-catch by reading and evaluating separately
-            source_with_trycatch(student_file, student_env)
+            student_plot_dir <- file.path(plots_output_dir, student_base)
+            if (!dir.exists(student_plot_dir)) {
+              dir.create(student_plot_dir, recursive = TRUE)
+            }
+            student_path <- normalizePath(student_file, winslash = "/", mustWork = TRUE)
+            grDevices::png(file.path(normalizePath(student_plot_dir, winslash = "/"), "fig-%03d.png"))
+            plot_dev <- grDevices::dev.cur()
+            old_wd <- setwd(dirname(student_path))
+            tryCatch({
+              # wrap each expression in try-catch by reading and evaluating separately
+              source_with_trycatch(student_path, student_env)
+            }, finally = {
+              setwd(old_wd)
+              if (plot_dev %in% grDevices::dev.list()) grDevices::dev.off(plot_dev)
+            })
           }
           
           # run tests on selected objects
