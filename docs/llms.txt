@@ -1,0 +1,455 @@
+# autoharp
+
+> **Semi-automatic grading of R and Rmd scripts**: powerful, flexible,
+> and designed for real-world teaching at scale.
+
+`autoharp` is an R package that provides a customisable set of tools for
+**assessing and grading R or R Markdown scripts** submitted by students.
+It goes beyond simple correctness checking to offer a complete,
+four-layer grading framework used in production across undergraduate
+statistics courses.
+
+------------------------------------------------------------------------
+
+## Why autoharp?
+
+Grading programming assignments at scale is hard. Students submit
+diverse code that may be *correct* but structured differently, or
+*incorrect* in subtle ways that output-comparison alone cannot catch.
+`autoharp` solves this with four complementary layers:
+
+| Feature | What it Does |
+|----|----|
+| ✅ **Output correctness** | Compare student objects against a reference solution using typed, tolerance-aware checks |
+| ⏱️ **Runtime & memory profiling** | Measure how long student code takes and how much memory it uses |
+| 🌳 **Static code analysis (AST)** | Inspect Abstract Syntax Trees to check *how* students solved a problem: e.g., “did they use `apply` instead of a `for` loop?” |
+| 🔍 **Similarity detection** | Identify suspiciously similar submissions using cosine, Jaccard, or edit-distance metrics |
+
+------------------------------------------------------------------------
+
+## The autoharp Workflow
+
+![autoharp four-phase grading workflow: Prepare → Distribute → Grade →
+Review](reference/figures/workflow.png)
+
+The workflow has **four phases**:
+
+1.  **Prepare**: Write a question sheet and a *solution template* (an
+    Rmd with special `autoharp.objs` / `autoharp.scalars` chunk options)
+2.  **Distribute**: Share the question sheet and a blank student
+    template
+3.  **Grade**: Run
+    [`populate_soln_env()`](https://github.com/namanlab/autoharp/reference/populate_soln_env.md)
+    then
+    [`render_one()`](https://github.com/namanlab/autoharp/reference/render_one.md)
+    per student; each submission runs in a sandboxed R process
+4.  **Review**: Inspect results via logs, thumbnail galleries, and the
+    interactive Grading App
+
+------------------------------------------------------------------------
+
+## Installation
+
+You can install **autoharp** from CRAN with:
+
+``` r
+
+install.packages("autoharp")
+```
+
+You can also install the development version of autoharp from
+[GitHub](https://github.com/namanlab/autoharp) with:
+
+``` r
+
+# install.packages("devtools")
+devtools::install_github("namanlab/autoharp")
+```
+
+------------------------------------------------------------------------
+
+## Quick Start
+
+``` r
+
+library(autoharp)
+
+# 1. Render the solution template to build a reference environment
+# Returns a list with $env (solution environment) and $test_fname (test script path) 
+soln <- populate_soln_env("solution_template.Rmd")
+
+# 2. Grade a student submission (runs in a sandboxed process)
+result <- render_one(
+  rmd_name      = "student_submission.Rmd",
+  out_dir       = "grading_output/",
+  knit_root_dir = getwd(),
+  soln_stuff    = soln
+)
+
+# 3. Inspect the grading result
+print(result)
+```
+
+------------------------------------------------------------------------
+
+## The Three Pillars of autoharp
+
+### 1. Complete Documents, Not Snippets
+
+`autoharp` grades **complete, reproducible documents**: entire R scripts
+or R Markdown files, rather than isolated code snippets. This encourages
+good scientific computing practices and tests the full submission
+pipeline.
+
+### 2. Static Analysis via AST Trees
+
+The `TreeHarp` S4 class represents any R expression as a **rooted
+tree**, enabling structural code checks that go beyond output
+comparison:
+
+``` r
+
+# Convert an expression to a tree
+tree <- TreeHarp(quote(mean(x + rnorm(10))), TRUE)
+plot(tree)
+
+# Check for absence of for-loops across an entire student script
+forest <- rmd_to_forestharp("student_script.Rmd")
+has_for_loop <- any(sapply(forest$forest, function(t) {
+  any(t@nodeTypes$name == "for")
+}))
+```
+
+### 3. Integrated Shiny Applications
+
+`autoharp` ships with **three ready-to-use Shiny applications**:
+
+| App | Audience | Purpose |
+|----|----|----|
+| **Grading App** | Instructor | Multi-tab GUI for batch grading, session management, and manual plot review |
+| **Similarity App** | Instructor | Detect code similarities using cosine, Jaccard, or edit-distance metrics |
+| **Solution Checker** | Student | Self-service portal to check submissions before the deadline |
+
+------------------------------------------------------------------------
+
+## The Grading App
+
+The Grading App provides a complete browser-based interface for the
+grading workflow - no command-line required. It features session
+management, auto-generated object tests, plot comparison, and batch
+grading with a live progress bar.
+
+![Grading App: Autoharp Grading
+tab](reference/figures/grading_app_autoharp.png)  
+*Batch grading: run render_one() for all student submissions with live
+progress tracking*
+
+------------------------------------------------------------------------
+
+## Similarity Detection
+
+The Similarity App helps identify suspiciously similar submissions using
+three metrics: cosine similarity, Jaccard index, and edit distance.
+
+![Similarity App: pairwise heatmap of student
+submissions](reference/figures/similarity_app_heatmap.png)  
+*Pairwise similarity heatmap: darker cells indicate higher similarity
+between submissions*
+
+------------------------------------------------------------------------
+
+## The Solution Checker (Student Portal)
+
+The Solution Checker is a **student-facing portal** where students can
+self-check their submission before the deadline.
+
+![Solution Checker: student
+interface](reference/figures/soln_checker_ui_02.png)  
+*Students upload their script and instantly see correctness results,
+lint feedback, and runtime stats*
+
+In a NUS course with **122 students** across two assignments, the
+Solution Checker saw peak usage of **19 logins/day** in the final 3 days
+before submission, evidence that students actively use it to iterate on
+their work.
+
+------------------------------------------------------------------------
+
+## Real-World Validation
+
+`autoharp` was developed and validated at the **National University of
+Singapore** across multiple cohorts. Key highlights from production use:
+
+- Graded hundreds of R/Rmd submissions across statistics courses
+- Each submission grades with a few minutes in a sandboxed process
+- Identified multiple cases of academic dishonesty via the Similarity
+  App
+- Students using the Solution Checker showed higher submission quality
+
+------------------------------------------------------------------------
+
+## Learning More
+
+- [Get
+  Started](https://namanlab.github.io/autoharp/articles/getting-started.html):
+  step-by-step introduction
+- [TreeHarp
+  Tutorial](https://namanlab.github.io/autoharp/articles/treeharp_class.html):
+  deep dive into AST-based analysis
+- [Grading
+  Workflow](https://namanlab.github.io/autoharp/articles/demo_workflow.html):
+  complete end-to-end example
+- [Function
+  Reference](https://namanlab.github.io/autoharp/reference/index.html):
+  full API documentation
+
+------------------------------------------------------------------------
+
+## Citation
+
+If you use `autoharp` in your teaching or research, please cite:
+
+``` bibtex
+@article{gopal2026autoharp,
+  title   = {autoharp: An R Package for Autograding R/Rmd/qmd Scripts},
+  author  = {Gopal, Vikneswaran and Naman, Agrawal and Huang, Yuting},
+  year    = {2026}
+}
+```
+
+------------------------------------------------------------------------
+
+## License
+
+MIT © [National University of Singapore](https://www.nus.edu.sg/)
+
+# Package index
+
+## Package Overview
+
+Package-level documentation for autoharp.
+
+- [`autoharp-package`](https://github.com/namanlab/autoharp/reference/autoharp.md)
+  [`autoharp`](https://github.com/namanlab/autoharp/reference/autoharp.md)
+  : autoharp: Semi-Automatic Grading of R and Rmd Scripts
+
+## Core Grading Functions
+
+The primary functions you need to set up and run the grading workflow.
+Start with
+[`populate_soln_env()`](https://github.com/namanlab/autoharp/reference/populate_soln_env.md)
+to prepare the solution environment, then use
+[`render_one()`](https://github.com/namanlab/autoharp/reference/render_one.md)
+to grade individual student scripts.
+
+- [`populate_soln_env()`](https://github.com/namanlab/autoharp/reference/populate_soln_env.md)
+  : Returns solution environment and test code from template.
+- [`render_one()`](https://github.com/namanlab/autoharp/reference/render_one.md)
+  : Run a single Rmd file through autoharp.
+- [`log_summary()`](https://github.com/namanlab/autoharp/reference/log_summary.md)
+  : Generate a dataframe from the log file.
+
+## TreeHarp S4 Class
+
+The `TreeHarp` S4 class represents any R expression as a rooted,
+directed tree using Breadth-First Search ordering. This enables powerful
+static code analysis beyond simple pattern matching.
+
+- [`TreeHarp()`](https://github.com/namanlab/autoharp/reference/TreeHarp-class.md)
+  [`length(`*`<TreeHarp>`*`)`](https://github.com/namanlab/autoharp/reference/TreeHarp-class.md)
+  [`show(`*`<TreeHarp>`*`)`](https://github.com/namanlab/autoharp/reference/TreeHarp-class.md)
+  [`names(`*`<TreeHarp>`*`)`](https://github.com/namanlab/autoharp/reference/TreeHarp-class.md)
+  : An R expression as a tree.
+- [`lang_2_tree()`](https://github.com/namanlab/autoharp/reference/lang_2_tree.md)
+  : Convert language object to tree.
+- [`to_BFS()`](https://github.com/namanlab/autoharp/reference/to_BFS.md)
+  : Function to rearrage nodes in BFS
+- [`subtree_at()`](https://github.com/namanlab/autoharp/reference/subtree_at.md)
+  : Extract a sub-tree.
+- [`generate_all_subtrees()`](https://github.com/namanlab/autoharp/reference/generate_all_subtrees.md)
+  : Generate all subtrees from a tree.
+- [`carve_subtree()`](https://github.com/namanlab/autoharp/reference/carve_subtree.md)
+  : Carve out branches to form a new tree.
+- [`is_subtree_rooted_at()`](https://github.com/namanlab/autoharp/reference/is_subtree_rooted_at.md)
+  : Checks if a tree is rooted at a node of another tree.
+- [`path_to_root()`](https://github.com/namanlab/autoharp/reference/path_to_root.md)
+  : Extract a path from node to root.
+- [`get_recursive_index()`](https://github.com/namanlab/autoharp/reference/get_recursive_index.md)
+  : Obtain an index to extract out a sub-call
+- [`get_parent_call_id()`](https://github.com/namanlab/autoharp/reference/get_parent_call_id.md)
+  : Get Node Id of Parent Call
+- [`join_treeharps()`](https://github.com/namanlab/autoharp/reference/join_treeharps.md)
+  : Root a list of trees.
+
+## ForestHarp — Working with Script Files
+
+Functions for converting entire R/Rmd/qmd scripts into collections of
+TreeHarp objects and applying analyses across them.
+
+- [`rmd_to_forestharp()`](https://github.com/namanlab/autoharp/reference/rmd_to_forestharp.md)
+  : Convert to TreeHarp objects
+- [`fapply()`](https://github.com/namanlab/autoharp/reference/fapply.md)
+  : Apply a function to a forest of trees.
+- [`count_self_fn()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`count_lam_fn()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`count_fn_call()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`extract_fn_call()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`extract_formal_args()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`extract_assigned_objects()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`extract_actual_args()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`count_num_lines_for_loop()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`detect_growing()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`detect_for_in_fn_def()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`count_fn_in_fn()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`detect_fn_call_in_for()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`extract_self_fn()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`detect_fn_arg()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  [`detect_nested_for()`](https://github.com/namanlab/autoharp/reference/forestharp-helpers.md)
+  : Forestharp helpers
+- [`pipe_can_improve_this()`](https://github.com/namanlab/autoharp/reference/pipe_can_improve_this.md)
+  : Identify if use of pipe operator can improve a code section
+- [`apply_can_improve_this()`](https://github.com/namanlab/autoharp/reference/apply_can_improve_this.md)
+  : Identifies if an apply function can improve the code
+- [`only_actual_args_differ()`](https://github.com/namanlab/autoharp/reference/only_actual_args_differ.md)
+  : Checks if two expressions differ only in terms of actual arguments
+
+## Checking & Assessment Functions
+
+Functions for checking the correctness of student outputs, validating R
+Markdown structure, measuring runtime performance, and counting code
+style lint violations.
+
+- [`check_correctness()`](https://github.com/namanlab/autoharp/reference/check_correctness.md)
+  : Check correctness of student solution rmd.
+- [`check_rmd()`](https://github.com/namanlab/autoharp/reference/check_rmd.md)
+  : Check if a File is Rmd
+- [`check_runtime()`](https://github.com/namanlab/autoharp/reference/check_runtime.md)
+  : Calculate Run-time Statistics
+- [`count_lints_one()`](https://github.com/namanlab/autoharp/reference/count_lints_one.md)
+  : File lint counter
+- [`count_lints_all()`](https://github.com/namanlab/autoharp/reference/count_lints_all.md)
+  : Lint counter
+
+## Script Utilities
+
+Utility functions for extracting content from scripts, managing
+environments, and working with file paths.
+
+- [`extract_chunks()`](https://github.com/namanlab/autoharp/reference/extract_chunks.md)
+  : Extract chunks that match a pattern.
+- [`extract_non_chunks()`](https://github.com/namanlab/autoharp/reference/extract_non_chunks.md)
+  : Extract non-chunks from an Rmd file.
+- [`extract_section_text()`](https://github.com/namanlab/autoharp/reference/extract_section_text.md)
+  : Extract section text from Rmd
+- [`get_libraries()`](https://github.com/namanlab/autoharp/reference/get_libraries.md)
+  : Extracts the Packages Used in An Rmd File.
+- [`generate_thumbnails()`](https://github.com/namanlab/autoharp/reference/generate_thumbnails.md)
+  : Generate a html of thumbnails
+- [`env_size()`](https://github.com/namanlab/autoharp/reference/env_size.md)
+  : Calculates the Total Memory Used
+- [`rmd_to_token_count()`](https://github.com/namanlab/autoharp/reference/rmd_to_token_count.md)
+  : Count tokens in R/Rmd
+- [`render_prechecks()`](https://github.com/namanlab/autoharp/reference/render_prechecks.md)
+  : Conducts checks before rendering file
+
+## File & Path Management
+
+Functions for managing grading output directories and file paths.
+
+- [`reset_path()`](https://github.com/namanlab/autoharp/reference/reset_path.md)
+  : Reset search path of current R session
+- [`clean_dir()`](https://github.com/namanlab/autoharp/reference/clean_dir.md)
+  : Removes md Files when no HTML Present
+- [`replace_sp_chars_filename()`](https://github.com/namanlab/autoharp/reference/replace_sp_chars_filename.md)
+  : Replace Special Characters in File Name
+- [`copy_e2e()`](https://github.com/namanlab/autoharp/reference/copy_e2e.md)
+  : Copy an object from one env to another.
+
+## TreeHarp Accessors & Methods
+
+S4 generic methods and accessor functions for working with individual
+TreeHarp objects — inspecting their structure, navigating the tree, and
+plotting.
+
+- [`get_adj_list()`](https://github.com/namanlab/autoharp/reference/get_adj_list.md)
+  : Generic for Getting Adjacency List
+- [`get_node_types()`](https://github.com/namanlab/autoharp/reference/get_node_types.md)
+  : Generic for Getting Node Types
+- [`get_parent_id()`](https://github.com/namanlab/autoharp/reference/get_parent_id.md)
+  : Generic for Getting Parent Node Id.
+- [`get_child_ids()`](https://github.com/namanlab/autoharp/reference/get_child_ids.md)
+  : Generic for Getting Child Node Ids
+- [`get_levels()`](https://github.com/namanlab/autoharp/reference/get_levels.md)
+  : Obtains the node levels from a tree.
+- [`plot(`*`<TreeHarp>`*`)`](https://github.com/namanlab/autoharp/reference/plot-TreeHarp-method.md)
+  : TreeHarp Plotting TreeHarp Objects
+- [`coerce(`*`<TreeHarp>`*`,`*`<matrix>`*`)`](https://github.com/namanlab/autoharp/reference/as.matrix.md)
+  : TreeHarp Cast a TreeHarp to Matrix.
+
+## TreeHarp Internal Helpers
+
+Lower-level helper functions used internally by the TreeHarp system.
+These are exported for advanced users building custom analyses.
+
+- [`adj_list_2_matrix()`](https://github.com/namanlab/autoharp/reference/adj_list_2_matrix.md)
+  : Convert adjacency list to a matrix
+- [`matrix_2_adj_list()`](https://github.com/namanlab/autoharp/reference/matrix_2_adj_list.md)
+  : Convert adjacency matrix to a list.
+- [`prune_depth()`](https://github.com/namanlab/autoharp/reference/prune_depth.md)
+  : Prune a tree up to a specified depth.
+- [`keep_branches()`](https://github.com/namanlab/autoharp/reference/keep_branches.md)
+  : Keep only branches specified by node numbers
+- [`find_branch_num()`](https://github.com/namanlab/autoharp/reference/find_branch_num.md)
+  : Find the branch that leads from one node to another.
+- [`rbind_to_nodes_info()`](https://github.com/namanlab/autoharp/reference/rbind_to_nodes_info.md)
+  : Update node information.
+- [`is_connected()`](https://github.com/namanlab/autoharp/reference/is_connected.md)
+  : Checks if a graph is connected.
+- [`is_cyclic_r()`](https://github.com/namanlab/autoharp/reference/is_cyclic_r.md)
+  : Checks if a graph contains any cycles.
+- [`update_adj_list()`](https://github.com/namanlab/autoharp/reference/update_adj_list.md)
+  : Update adjacency list.
+- [`get_next_subtree()`](https://github.com/namanlab/autoharp/reference/get_next_subtree.md)
+  : Generate the next sub-tree.
+- [`get_next_depth_id()`](https://github.com/namanlab/autoharp/reference/get_next_depth_id.md)
+  : Get the id and depth of a child node.
+- [`tree_sim()`](https://github.com/namanlab/autoharp/reference/tree_sim.md)
+  : Compute tree similarity
+- [`jaccard_treeharp()`](https://github.com/namanlab/autoharp/reference/jaccard_treeharp.md)
+  : Computes Jaccard Index
+- [`carve_mst()`](https://github.com/namanlab/autoharp/reference/carve_mst.md)
+  : Carve a Minimal Spanning Tree Out
+- [`K2()`](https://github.com/namanlab/autoharp/reference/K2.md) :
+  Compute tree similarity
+- [`get_child_ids2()`](https://github.com/namanlab/autoharp/reference/get_child_ids2.md)
+  : Get the children node ids
+- [`get_parent_id2()`](https://github.com/namanlab/autoharp/reference/get_parent_id2.md)
+  : Get the parent node id
+
+# Articles
+
+### All vignettes
+
+- [Key
+  Concepts](https://github.com/namanlab/autoharp/articles/bg_concepts.md):
+
+- [Example Workflow:
+  autoharp](https://github.com/namanlab/autoharp/articles/demo_workflow.md):
+
+- [Getting Started with
+  autoharp](https://github.com/namanlab/autoharp/articles/getting-started.md):
+
+  Learn how to install autoharp and use it to grade your first R or R
+  Markdown student submission in minutes.
+
+- [Shiny App:
+  Grading](https://github.com/namanlab/autoharp/articles/shiny_grading.md):
+
+- [Shiny App: Similarity
+  Checks](https://github.com/namanlab/autoharp/articles/shiny_similarity.md):
+
+- [Shiny App: Solution
+  Checker](https://github.com/namanlab/autoharp/articles/shiny_soln_checker.md):
+
+- [TreeHarp S4
+  class](https://github.com/namanlab/autoharp/articles/treeharp_class.md):

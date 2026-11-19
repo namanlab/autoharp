@@ -3,6 +3,9 @@
 \name{as.matrix}
 \alias{as.matrix}
 \title{TreeHarp Cast a TreeHarp to Matrix.}
+\usage{
+\S4method{coerce}{TreeHarp,matrix}(from, to = "matrix", strict = TRUE)
+}
 \arguments{
 \item{from}{A treeharp object.}
 }

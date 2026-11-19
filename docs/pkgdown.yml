@@ -1,5 +1,5 @@
 pandoc: 3.8.2.1
-pkgdown: 2.0.7
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   bg_concepts: bg_concepts.html
@@ -9,8 +9,7 @@ articles:
   shiny_similarity: shiny_similarity.html
   shiny_soln_checker: shiny_soln_checker.html
   treeharp_class: treeharp_class.html
-last_built: 2026-04-11T08:01Z
+last_built: 2026-11-19T05:23Z
 urls:
   reference: https://github.com/namanlab/autoharp/reference
   article: https://github.com/namanlab/autoharp/articles
-
