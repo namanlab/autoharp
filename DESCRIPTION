@@ -62,6 +62,7 @@ Collate:
     'write_html.R'
     'zzz.R'
 Suggests: 
+    kableExtra,
     testthat
 SystemRequirements: pandoc (>= 1.14) - http://pandoc.org
 URL: https://namanlab.github.io/autoharp/
