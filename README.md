@@ -6,6 +6,7 @@
 [![pkgdown](https://img.shields.io/github/actions/workflow/status/namanlab/test_autoharp_2/pkgdown.yaml?logo=github&logoColor=white&label=pkgdown&style=flat-square)](https://namanlab.github.io/test_autoharp_2/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
 -->
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/autoharp)](https://cran.r-project.org/package=autoharp)
 <!-- badges: end -->
 
 > **Semi-automatic grading of R and Rmd scripts**: powerful, flexible, and
