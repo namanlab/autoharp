@@ -1,10 +1,5 @@
 # TreeHarp S4 class
 
-``` r
-
-library(autoharp)
-```
-
 ## Introduction
 
 Within `autoharp`, the TreeHarp S4 class is used to represent an R
@@ -27,6 +22,7 @@ we intended to capture.
 
 ``` r
 
+library(autoharp)
 tree1 <- TreeHarp(quote(lm(y ~ x1 + x2, data=mydata)), TRUE)
 ```
 
@@ -194,3 +190,93 @@ These are the other S4 methods defined for the TreeHarp class:
 - `get_node_types`: returns the nodeTypes slot from a TreeHarp object.
 - `get_adj_list`: returns the adjacency list slot from a TreeHarp
   object.
+
+In the table below, we list functions that have not been registered as
+S4 methods for TreeHarp. They are not immediately useful for typical
+grading sessions, but they are nonetheless useful when working with tree
+expressions.
+
+| Function name | Function description |
+|:---|:---|
+| subtree_at | Returns a subtree, given a node number (integer) as an argument. |
+| generate_all_subtrees | Enumerates and prints all subtrees of a TreeHarp object. |
+| carve_subtree | Given a list of nodes, this function returns a TreeHarp object with only the nodes indicated. |
+| is_subtree_rooted_at | This function can be used to check if one tree is rooted at a particular node of another tree. |
+| path_to_root | Identifies the nodes on the path from a node up to the root of a TreeHarp object. |
+| get_recursive_index | Returns a recursive call index that can be used to extract a sub-call from an R call (language expression). |
+| get_parent_call_id | Returns the most recent call from a particular node id. |
+
+## ForestHarp Helpers
+
+A TreeHarp object is a single R expression. However, student scripts
+contain multiple expressions; hence the `autoharp` provides
+functionality through
+[`fapply()`](https://github.com/namanlab/autoharp/reference/fapply.md)
+to process collections of expressions. It works on ForestHarp objects. A
+ForestHarp is a loosely defined idea, in the sense that there is no such
+S4 class defined. But it is an R object with a precise structure: it is
+a list of TreeHarp objects, and an accompanying set of line numbers
+corresponding to these expressions in the original student script. A
+ForestHarp object is best created using
+[`rmd_to_forestharp()`](https://github.com/namanlab/autoharp/reference/rmd_to_forestharp.md)
+function.
+
+``` r
+
+stud_script_path <- system.file("examples", "example-01", "student_scripts", 
+                                "qn01_scr_02.R", package = "autoharp")
+f1 <- rmd_to_forestharp(stud_script_path)
+str(f1, max.level = 2)
+#> List of 2
+#>  $ forest   :List of 5
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>  $ line_nums: int [1:5] 1 9 11 12 13
+```
+
+To work with such lists, the `autoharp` provides
+[`fapply()`](https://github.com/namanlab/autoharp/reference/fapply.md),
+for applying functions to ForestHarp objects, and then combining them
+back together again. The function
+[`fapply()`](https://github.com/namanlab/autoharp/reference/fapply.md)
+takes inspiration from the family of apply functions within R.
+
+Suppose that we wished to count the number of times a `for` loop was
+used in the whole script. Then this would do the trick:
+
+``` r
+
+fapply(f1, count_fn_call, pattern = "^for$")
+#> [1] 1
+```
+
+`count_fn_call` is a ForestHarp helper function. `fapply` applies it to
+each TreeHarp object in the list, and then combines that output into a
+scalar. By default, it combines them by taking the sum. However, it is
+possible to specify the combining function, or to just return the
+uncombined list.
+
+The following table lists the currently available forestharp helper
+functions. They work on a single TreeHarp expression at a time, and can
+be combined with `fapply`. In all of them, the first argument is a
+TreeHarp expression.
+
+| Function name | Function description |
+|:---|:---|
+| count_self_fn | Counts the number of functions defined by the student, in the script. |
+| count_lam_fn | Counts the number of anonymous functions (used in [`sapply()`](https://rdrr.io/r/base/lapply.html), etc). |
+| count_fn_call | Counts the number of times a function with a particular name was executed. The function can be described by providing a regular expression, or a package namespace. |
+| extract_fn_call | Instead of just counting, this extracts the entire function call as a string. |
+| extract_formal_args | Extracts the formal arguments in a function call. |
+| extract_actual_args | Extracts the actual arguments in a function call. |
+| extract_assigned_objects | Extracts the name of object in an assignment expression. |
+| count_num_lines_for_loop | Counts the number of sub-expressions (lines) in a for loop. |
+| detect_growing | Detects use of a `for` loop without pre-allocating an iterable of the correct length. |
+| detect_for_in_fn_def | Detects the presence of a `for` loop in a function definition. |
+| count_fn_in_fn | Given functions A and B, this counts the number of times B is called within A. |
+| detect_fn_call_in_for | Detects the call of a function within a `for` loop. |
+| detect_fn_arg | Detects if a specified argument was part of a function call. |
+| detect_nested_for | Detects the presence of a nested `for` loop. |

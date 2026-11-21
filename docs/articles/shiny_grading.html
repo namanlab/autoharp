@@ -72,7 +72,7 @@
 
 
 
-
+<script src="shiny_grading_files/kePrint-0.0.1/kePrint.js"></script><link href="shiny_grading_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Shiny App: Grading</h1>
@@ -159,7 +159,173 @@ found are listed with checkboxes next to a table of the suggested tests
 for each selected object, and instructors can choose which objects to
 include. If the model solution produces errors (for example because a
 data file cannot be found), the setup panel lists them so that the
-problem can be fixed before grading.</p>
+problem can be fixed before grading. The full list of automated tests
+generated is as follows:</p>
+<table class="table table" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;">
+Test
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr></thead>
+<tbody>
+<tr grouplength="4">
+<td colspan="2" style="border-bottom: 1px solid;">
+<strong>Numeric vectors</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+length
+</td>
+<td style="text-align:left;">
+Compares vector lengths
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+mean/sd/min/max/sum
+</td>
+<td style="text-align:left;">
+Statistical comparisons with tolerance
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+NA count
+</td>
+<td style="text-align:left;">
+Counts missing values
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+identical values
+</td>
+<td style="text-align:left;">
+Element-by-element comparison
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="2" style="border-bottom: 1px solid;">
+<strong>Data frames</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+nrow/ncol
+</td>
+<td style="text-align:left;">
+Dimension comparisons
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+column names
+</td>
+<td style="text-align:left;">
+Checks column name sets match
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+column types
+</td>
+<td style="text-align:left;">
+Verifies class of each column
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+numeric column statistics
+</td>
+<td style="text-align:left;">
+Mean and SD for numeric columns
+</td>
+</tr>
+<tr grouplength="3">
+<td colspan="2" style="border-bottom: 1px solid;">
+<strong>Matrices</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+dimensions
+</td>
+<td style="text-align:left;">
+Row and column count comparison
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+row/column names
+</td>
+<td style="text-align:left;">
+Name attribute comparison
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+element-wise difference
+</td>
+<td style="text-align:left;">
+Maximum absolute difference below threshold
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="2" style="border-bottom: 1px solid;">
+<strong>Functions</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+argument count
+</td>
+<td style="text-align:left;">
+Number of formal arguments
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+argument names
+</td>
+<td style="text-align:left;">
+Argument name set comparison
+</td>
+</tr>
+<tr grouplength="3">
+<td colspan="2" style="border-bottom: 1px solid;">
+<strong>Factors</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+level count
+</td>
+<td style="text-align:left;">
+Number of factor levels
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+level names/order
+</td>
+<td style="text-align:left;">
+Level set and ordering comparison
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+level frequencies
+</td>
+<td style="text-align:left;">
+Frequency distribution comparison
+</td>
+</tr>
+</tbody>
+</table>
 <p>The generated template adds test chunks to the model solution. Each
 chunk includes the <code>autoharp.objs</code> option (specifying which
 objects to extract from student code) and the

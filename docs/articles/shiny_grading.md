@@ -78,7 +78,32 @@ found are listed with checkboxes next to a table of the suggested tests
 for each selected object, and instructors can choose which objects to
 include. If the model solution produces errors (for example because a
 data file cannot be found), the setup panel lists them so that the
-problem can be fixed before grading.
+problem can be fixed before grading. The full list of automated tests
+generated is as follows:
+
+| Test                      | Description                                 |
+|---------------------------|---------------------------------------------|
+| **Numeric vectors**       |                                             |
+| length                    | Compares vector lengths                     |
+| mean/sd/min/max/sum       | Statistical comparisons with tolerance      |
+| NA count                  | Counts missing values                       |
+| identical values          | Element-by-element comparison               |
+| **Data frames**           |                                             |
+| nrow/ncol                 | Dimension comparisons                       |
+| column names              | Checks column name sets match               |
+| column types              | Verifies class of each column               |
+| numeric column statistics | Mean and SD for numeric columns             |
+| **Matrices**              |                                             |
+| dimensions                | Row and column count comparison             |
+| row/column names          | Name attribute comparison                   |
+| element-wise difference   | Maximum absolute difference below threshold |
+| **Functions**             |                                             |
+| argument count            | Number of formal arguments                  |
+| argument names            | Argument name set comparison                |
+| **Factors**               |                                             |
+| level count               | Number of factor levels                     |
+| level names/order         | Level set and ordering comparison           |
+| level frequencies         | Frequency distribution comparison           |
 
 The generated template adds test chunks to the model solution. Each
 chunk includes the `autoharp.objs` option (specifying which objects to

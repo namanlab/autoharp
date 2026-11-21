@@ -15,6 +15,14 @@ coerce(from, to = "matrix", strict = TRUE)
 
   A treeharp object.
 
+- to:
+
+  The class to convert to; always `"matrix"` here.
+
+- strict:
+
+  Not used; it comes from the `coerce()` generic.
+
 ## Value
 
 A matrix.
