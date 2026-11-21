@@ -20,10 +20,10 @@ diverse code that may be *correct* but structured differently, or
 
 | Feature | What it Does |
 |----|----|
-| ✅ **Output correctness** | Compare student objects against a reference solution using typed, tolerance-aware checks |
-| ⏱️ **Runtime & memory profiling** | Measure how long student code takes and how much memory it uses |
-| 🌳 **Static code analysis (AST)** | Inspect Abstract Syntax Trees to check *how* students solved a problem: e.g., “did they use `apply` instead of a `for` loop?” |
-| 🔍 **Similarity detection** | Identify suspiciously similar submissions using cosine, Jaccard, or edit-distance metrics |
+| **Output correctness** | Compare student objects against a reference solution using typed, tolerance-aware checks |
+| **Runtime & memory profiling** | Measure how long student code takes and how much memory it uses |
+| **Static code analysis (AST)** | Inspect Abstract Syntax Trees to check *how* students solved a problem: e.g., “did they use `apply` instead of a `for` loop?” |
+| **Similarity detection** | Identify suspiciously similar submissions using cosine, Jaccard, or edit-distance metrics |
 
 ------------------------------------------------------------------------
 
