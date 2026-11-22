@@ -1,0 +1,282 @@
+# TreeHarp S4 class
+
+## Introduction
+
+Within `autoharp`, the TreeHarp S4 class is used to represent an R
+expression. It can then be manipulated in several ways in order to
+perform static code analysis of student submissions.
+
+The `lintr` package does an excellent job of parsing R code, but it
+provides too much detail for the simpler tasks that `autoharp` carries
+out. It is still used in the constructor, but some of the parsed output
+from `lintr` are dropped. For instance, the `(` parentheses are dropped.
+
+To understand the elements in a TreeHarp, let us consider the use of a
+simple expression. Suppose we fit a linear model to variables in a
+dataset. To create a TreeHarp object from an expression, we provide the
+expression together with the `quote = TRUE` argument. This is important
+because method dispatch is performed based on that second argument, not
+the first! If we were to dispatch on the first, R would evalate the
+expression in order to check its class - thus destroying the expression
+we intended to capture.
+
+``` r
+
+library(autoharp)
+tree1 <- TreeHarp(quote(lm(y ~ x1 + x2, data=mydata)), TRUE)
+```
+
+TreeHarp objects have an associated plot method for visualisation of the
+expression. This method relies on the plotting functions from the
+`igraph` package. The full set of parameter options from `igraph` can be
+utilised when plotting TreeHarp objects. Figure 1 displays the
+visualisation of the `tree1` object created earlier.
+
+``` r
+
+opar <- par(mar=c(0,0,0,0))
+plot(tree1, vertex.size=25, asp=0.6, vertex.color="gray", vertex.frame.color=NA)
+```
+
+![Example TreeHarp
+object](treeharp_class_files/figure-html/th-example-1-plot-1.png)
+
+Example TreeHarp object
+
+``` r
+
+par(opar)
+```
+
+## Slots
+
+There are 4 slots in a TreeHarp object. The only required one for valid
+instantiation is the adjList.
+
+### adjList
+
+``` r
+
+slot(tree1, "adjList")
+#> $lm
+#> [1] 2 3
+#> 
+#> $`~`
+#> [1] 4 5
+#> 
+#> $data
+#> [1] 6
+#> 
+#> $y
+#> NULL
+#> 
+#> $`+`
+#> [1] 7 8
+#> 
+#> $mydata
+#> NULL
+#> 
+#> $x1
+#> NULL
+#> 
+#> $x2
+#> NULL
+```
+
+This slot contains an adjacency list that represents the tree structure
+of the code. Nodes in a tree are labelled in Breadth-First Search (BFS)
+order. Thus the root node has id 1, and does not appear in the adjacency
+list. To avoid redundancy, the TreeHarp convention is to list each edge
+only once, as a child. Here’s what we mean: node 2 in the example above
+is a neighbour of node 1 and 4, but it only appears under node 1. It
+does not appear as an adjacent node of node 4 because it is not child of
+node 4. Terminal nodes (leafs) have a NULL entry in the list.
+
+### nodeTypes
+
+If the TreeHarp object was constructed from an R language object, this
+slot will be automatically populated. To identify node types, functions
+from [rlang](https://cran.r-project.org/package=rlang) are applied to
+sub-expressions defined by nodes recursively. Each node is then
+identified as either:
+
+- a function call, or
+- a formal argument.
+
+The `nodeTypes` slot stores the information in a data frame with one row
+per node. The columns are:
+
+1.  *id* (node id). The root node has id 1.
+2.  *name*. The name of the node.
+3.  *call_status*. A TRUE/FALSE column indicating if the node was a call
+    or not.
+4.  *formal_arg*. If the node is not a call, then this column will
+    indicate if it is a formal argument or not. If it is not a call and
+    not a formal argument, it is a symbol representing an R object - we
+    call this an actual argument.
+5.  *depth*. This is the depth of the node in the tree. The root of the
+    tree has depth 1.
+
+autoharp provides a getter function to retrieve the node types easily.
+
+``` r
+
+get_node_types(tree1)
+#>   id   name call_status formal_arg depth
+#> 1  1     lm        TRUE      FALSE     1
+#> 2  2      ~        TRUE      FALSE     2
+#> 3  3   data       FALSE       TRUE     2
+#> 4  4      y       FALSE      FALSE     3
+#> 5  5      +        TRUE      FALSE     3
+#> 6  6 mydata       FALSE      FALSE     3
+#> 7  7     x1       FALSE      FALSE     4
+#> 8  8     x2       FALSE      FALSE     4
+```
+
+### call
+
+The call slot stores the original expression that was used to construct
+the TreeHarp object, just in case it needs to be executed later.
+
+``` r
+
+slot(tree1, "call")
+#> lm(y ~ x1 + x2, data = mydata)
+```
+
+### repr
+
+The repr slot contains a string representation of the object. If the
+original TreeHarp object has been modified, then it may not be a proper
+R expression, so this slot stores the best representation of it. This
+slot is used when the object is printed, or when `show` is called on the
+S4 object.
+
+``` r
+
+tree1
+#> lm(y ~ x1 + x2, data = mydata)
+```
+
+## TreeHarp Methods
+
+As we have already demonstrated, the plot method exists for this class.
+It relies on the tree layout of igraph package, but additional arguments
+can be used to customise the plot. For instance, we could use colour to
+distinguish between calls and non-call nodes:
+
+``` r
+
+opar <- par(mar=c(0,0,0,0))
+plot(tree1, vertex.size=25, asp=0.6, vertex.color=tree1@nodeTypes$call_status)
+```
+
+![TreeHarp object with colored
+nodes](treeharp_class_files/figure-html/th-example-2-plot-1.png)
+
+TreeHarp object with colored nodes
+
+``` r
+
+par(opar)
+```
+
+These are the other S4 methods defined for the TreeHarp class:
+
+- `length`: returns the number of nodes.
+- `names`: returns the node names.
+- `get_parent_id`: returns the parent id of a node.
+- `get_child_ids`: returns the ids of the children of a node.
+- `get_node_types`: returns the nodeTypes slot from a TreeHarp object.
+- `get_adj_list`: returns the adjacency list slot from a TreeHarp
+  object.
+
+In the table below, we list functions that have not been registered as
+S4 methods for TreeHarp. They are not immediately useful for typical
+grading sessions, but they are nonetheless useful when working with tree
+expressions.
+
+| Function name | Function description |
+|:---|:---|
+| subtree_at | Returns a subtree, given a node number (integer) as an argument. |
+| generate_all_subtrees | Enumerates and prints all subtrees of a TreeHarp object. |
+| carve_subtree | Given a list of nodes, this function returns a TreeHarp object with only the nodes indicated. |
+| is_subtree_rooted_at | This function can be used to check if one tree is rooted at a particular node of another tree. |
+| path_to_root | Identifies the nodes on the path from a node up to the root of a TreeHarp object. |
+| get_recursive_index | Returns a recursive call index that can be used to extract a sub-call from an R call (language expression). |
+| get_parent_call_id | Returns the most recent call from a particular node id. |
+
+## ForestHarp Helpers
+
+A TreeHarp object is a single R expression. However, student scripts
+contain multiple expressions; hence the `autoharp` provides
+functionality through
+[`fapply()`](https://github.com/namanlab/autoharp/reference/fapply.md)
+to process collections of expressions. It works on ForestHarp objects. A
+ForestHarp is a loosely defined idea, in the sense that there is no such
+S4 class defined. But it is an R object with a precise structure: it is
+a list of TreeHarp objects, and an accompanying set of line numbers
+corresponding to these expressions in the original student script. A
+ForestHarp object is best created using
+[`rmd_to_forestharp()`](https://github.com/namanlab/autoharp/reference/rmd_to_forestharp.md)
+function.
+
+``` r
+
+stud_script_path <- system.file("examples", "example-01", "student_scripts", 
+                                "qn01_scr_02.R", package = "autoharp")
+f1 <- rmd_to_forestharp(stud_script_path)
+str(f1, max.level = 2)
+#> List of 2
+#>  $ forest   :List of 5
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>   ..$ :Formal class 'TreeHarp' [package "autoharp"] with 4 slots
+#>  $ line_nums: int [1:5] 1 9 11 12 13
+```
+
+To work with such lists, the `autoharp` provides
+[`fapply()`](https://github.com/namanlab/autoharp/reference/fapply.md),
+for applying functions to ForestHarp objects, and then combining them
+back together again. The function
+[`fapply()`](https://github.com/namanlab/autoharp/reference/fapply.md)
+takes inspiration from the family of apply functions within R.
+
+Suppose that we wished to count the number of times a `for` loop was
+used in the whole script. Then this would do the trick:
+
+``` r
+
+fapply(f1, count_fn_call, pattern = "^for$")
+#> [1] 1
+```
+
+`count_fn_call` is a ForestHarp helper function. `fapply` applies it to
+each TreeHarp object in the list, and then combines that output into a
+scalar. By default, it combines them by taking the sum. However, it is
+possible to specify the combining function, or to just return the
+uncombined list.
+
+The following table lists the currently available forestharp helper
+functions. They work on a single TreeHarp expression at a time, and can
+be combined with `fapply`. In all of them, the first argument is a
+TreeHarp expression.
+
+| Function name | Function description |
+|:---|:---|
+| count_self_fn | Counts the number of functions defined by the student, in the script. |
+| count_lam_fn | Counts the number of anonymous functions (used in [`sapply()`](https://rdrr.io/r/base/lapply.html), etc). |
+| count_fn_call | Counts the number of times a function with a particular name was executed. The function can be described by providing a regular expression, or a package namespace. |
+| extract_fn_call | Instead of just counting, this extracts the entire function call as a string. |
+| extract_formal_args | Extracts the formal arguments in a function call. |
+| extract_actual_args | Extracts the actual arguments in a function call. |
+| extract_assigned_objects | Extracts the name of object in an assignment expression. |
+| count_num_lines_for_loop | Counts the number of sub-expressions (lines) in a for loop. |
+| detect_growing | Detects use of a `for` loop without pre-allocating an iterable of the correct length. |
+| detect_for_in_fn_def | Detects the presence of a `for` loop in a function definition. |
+| count_fn_in_fn | Given functions A and B, this counts the number of times B is called within A. |
+| detect_fn_call_in_for | Detects the call of a function within a `for` loop. |
+| detect_fn_arg | Detects if a specified argument was part of a function call. |
+| detect_nested_for | Detects the presence of a nested `for` loop. |

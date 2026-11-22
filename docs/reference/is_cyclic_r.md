@@ -1,0 +1,50 @@
+# Checks if a graph contains any cycles.
+
+A tree is a graph that is connected but does not have any cycles. This
+function checks if a provided adjacency matrix contains cycles.
+
+## Usage
+
+``` r
+is_cyclic_r(adj_mat, node_v, parent_node = -1, visited_env)
+```
+
+## Arguments
+
+- adj_mat:
+
+  A symmetric matrix of 1's and 0's, with 1 in entry (i,j) representing
+  an edge between the two vertices.
+
+- node_v:
+
+  The node to begin searching for cycles from. An integer.
+
+- parent_node:
+
+  The parent node of node_v. Also an integer. Use -1 if you are starting
+  from node 1. This is in fact the default.
+
+- visited_env:
+
+  An environment containing a logical vector indicating which nodes have
+  already been visited. The vector has to be named "visited". See the
+  details.
+
+  The function works by traversing all the nodes, in a BFS order. If it
+  finds a node has a parent that has already been visited, it concludes
+  that there is a cycle.
+
+  The function is recursive, and has to update the vector of visisted
+  nodes within each call. Hence the visited vector is stored in an
+  environment that is passed along. It will return an error if no such
+  environment is provided. It is a very specific input that the function
+  requires, and this is another reason that this function is not
+  exported.
+
+  This function is used within the validity checks for the S4 class. It
+  is not exported for the user.
+
+## Value
+
+A logical value indicating if the graph contains cycles.

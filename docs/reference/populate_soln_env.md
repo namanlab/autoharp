@@ -1,0 +1,101 @@
+# Returns solution environment and test code from template.
+
+Generates objects for checking solution correctness.
+
+## Usage
+
+``` r
+populate_soln_env(
+  soln_fname,
+  pattern,
+  knit_root_dir,
+  render_only = FALSE,
+  output = NULL,
+  dummy = FALSE
+)
+```
+
+## Arguments
+
+- soln_fname:
+
+  An rmd file containing the checks to be run on the student solution.
+
+- pattern:
+
+  The pattern that identifies which chunks in the solution are are
+  testing chunks. If this argument is missing, the default pattern used
+  is "test".
+
+- knit_root_dir:
+
+  The root directory to use for knitting the rmd file. This argument is
+  optional. If it is missing, it uses the root directory in
+  knitr::opts_knit\$get('root.dir').
+
+- render_only:
+
+  A logical value. If this is TRUE, then the solution is run, rendered
+  and returned. Otherwise the rendered html is deleted.
+
+- output:
+
+  The path to the knitted solution md file. This is usually deleted
+  immediately, but sometimes we may want to keep it. This argument is
+  passed on to [`knit`](https://rdrr.io/pkg/knitr/man/knit.html), so
+  please refer to that page for the warnings about setting this argument
+  when figures are involved.
+
+- dummy:
+
+  A logical value. If TRUE, then a dummy solution object is created The
+  environment will be empty, and the temporary test script will only
+  have one line in it: \`ah_dummy \<- TRUE\`. This solution object can
+  be used to render a solution file without any correctness checks. Of
+  course, one could just knit it directly, but this is still useful when
+  testing things out.
+
+## Value
+
+If render_only is FALSE, a list containing 2 components: the environment
+populated by the solution rmd and the path to an R script containing the
+test code.
+
+If render_only is TRUE, then the output list consists of the
+aforementioned environment, and the path to the rendered solution file
+(html). This option is useful for debugging the solution file.
+
+## Details
+
+Test code should be written in a chunk that generates scalars from
+student objects.
+
+The solution file has to be an Rmd file (not an R script), because it
+relies on the autoharp.obj and autoharp.scalars knitr hooks being
+present.
+
+In addition, if it is required that a solution object is to be tested
+against the analogous object within the student environment, these
+objects should be listed within the autoharp.objs option of a code
+chunk. These objects will be copied with the "." prefix.
+
+Here is an overview of how the function works:
+
+1.  Knit the solution file to generate the solution (or "correct")
+    objects.
+
+2.  Rename these with the "." prefix in the solution environment object.
+
+3.  Extract the lines of test code into a temporary R script.
+
+4.  Wrap those chunks that contain autoharp.scalars hook with tryCatch.
+
+5.  Return the solution environment and path to the R test script.
+
+Typically, the next step is to call
+[`check_correctness`](https://github.com/namanlab/autoharp/reference/check_correctness.md).
+
+## See also
+
+[`check_correctness`](https://github.com/namanlab/autoharp/reference/check_correctness.md),
+[`render_one`](https://github.com/namanlab/autoharp/reference/render_one.md)
