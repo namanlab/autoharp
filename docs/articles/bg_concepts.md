@@ -116,4 +116,5 @@ Xie, Yihui. 2025. *Knitr: A General-Purpose Package for Dynamic Report
 Generation in R*. <https://yihui.org/knitr/>.
 
 Xie, Yihui, Christophe Dervieux, and Emily Riederer. 2020. *R Markdown
-Cookbook*. Chapman; Hall/CRC. <https://yihui.org/rmarkdown-cookbook/>.
+Cookbook*. Chapman; Hall/CRC.
+<https://pkg.yihui.org/rmarkdown-cookbook/>.
